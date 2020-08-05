@@ -13,16 +13,16 @@ import com.dkitamura.crave.databinding.HomeFragmentBinding
 import com.dkitamura.crave.extensions.autoCleared
 import com.dkitamura.crave.network.Client
 import com.dkitamura.crave.network.Result
+import dagger.hilt.android.AndroidEntryPoint
 
+@AndroidEntryPoint
 class HomeFragment : Fragment() {
 
     companion object {
         fun newInstance() = HomeFragment()
     }
 
-    private val viewModel: HomeViewModel by viewModels<HomeViewModel> {
-        ViewModelFactory(this, Client(BuildConfig.API_KEY).build())
-    }
+    private val viewModel: HomeViewModel by viewModels()
 
     private var binding: HomeFragmentBinding by autoCleared()
 
@@ -45,10 +45,10 @@ class HomeFragment : Fragment() {
         }
 
 
-        viewModel.recipeResult.observe(viewLifecycleOwner, Observer {
-            when(it) {
+        viewModel.recipeResult.observe(viewLifecycleOwner, Observer { recipeResult ->
+            when(recipeResult) {
                 is Result.Success -> {
-                    homeEpoxyController.setValues(isLoading = false, recipeList = it.data)
+                    homeEpoxyController.setValues(isLoading = false, recipeList = recipeResult.data)
                 }
                 is Result.InProgress -> {
                     homeEpoxyController.setValues(isLoading = true)
@@ -56,6 +56,7 @@ class HomeFragment : Fragment() {
                 is Result.Error -> TODO()
             }
         })
+
         viewModel.getRandomRecipes()
 
     }
