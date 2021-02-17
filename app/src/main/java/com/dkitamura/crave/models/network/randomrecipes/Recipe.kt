@@ -15,7 +15,7 @@ data class Recipe(
     @Json(name = "creditsText")
     val creditsText: String?,
     @Json(name = "cuisines")
-    val cuisines: List<Any>?,
+    val cuisines: List<String>?,
     @Json(name = "dairyFree")
     val dairyFree: Boolean?,
     @Json(name = "diets")
