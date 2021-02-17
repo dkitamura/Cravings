@@ -1,8 +1,10 @@
 package com.dkitamura.crave.ui.home
 
+import androidx.core.text.parseAsHtml
 import com.airbnb.epoxy.EpoxyController
 import com.dkitamura.crave.models.network.randomrecipes.Recipe
 import com.dkitamura.crave.ui.home.epoxy.epoxyLoaderView
+import com.dkitamura.crave.ui.home.epoxy.epoxyRandomRecipeItem
 import com.dkitamura.crave.ui.home.epoxy.homeTextView
 
 class HomeEpoxyController: EpoxyController() {
@@ -23,9 +25,19 @@ class HomeEpoxyController: EpoxyController() {
             }
         } else {
             for (recipe in recipes) {
-                homeTextView {
+
+                epoxyRandomRecipeItem {
                     id(recipe.hashCode())
-                    title(recipe.title?.toString() ?: "")
+
+                    title(recipe.title ?: "")
+
+                    if(recipe.cuisines?.isNotEmpty() == true) {
+                        description("Cuisines: ${recipe.cuisines.joinToString()}")
+                    } else {
+                        description("Cuisines: Not available")
+                    }
+
+                    image(recipe.image ?: "")
                 }
             }
         }

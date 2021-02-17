@@ -7,11 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.Observer
-import com.dkitamura.crave.BuildConfig
-import com.dkitamura.crave.ViewModelFactory
 import com.dkitamura.crave.databinding.HomeFragmentBinding
 import com.dkitamura.crave.extensions.autoCleared
-import com.dkitamura.crave.network.Client
 import com.dkitamura.crave.network.Result
 import dagger.hilt.android.AndroidEntryPoint
 
