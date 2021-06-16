@@ -3,8 +3,11 @@ package com.dkitamura.crave.ui.home.epoxy
 import android.content.Context
 import android.util.AttributeSet
 import android.view.LayoutInflater
+import android.view.View
 import android.widget.FrameLayout
+import androidx.annotation.Nullable
 import coil.api.load
+import com.airbnb.epoxy.CallbackProp
 import com.airbnb.epoxy.ModelProp
 import com.airbnb.epoxy.ModelView
 import com.airbnb.epoxy.TextProp
@@ -24,6 +27,13 @@ class EpoxyRandomRecipeItem  @JvmOverloads constructor(
     private var binding: EpoxyRandomRecipeItemBinding =
         EpoxyRandomRecipeItemBinding.inflate(LayoutInflater.from(context), this, true)
 
+    private var recipeId = -1
+
+    @ModelProp
+    fun setRecipeId(id: Int) {
+       this.recipeId = id
+    }
+
     @TextProp // Use this annotation for text.
     fun setTitle(text: CharSequence) {
         binding.titleText.text = text
@@ -39,5 +49,10 @@ class EpoxyRandomRecipeItem  @JvmOverloads constructor(
         binding.recipeImage.load(imageUrl)
     }
 
-
+    @CallbackProp // Use this annotation for click listeners or other callbacks.
+     fun clickListener(@Nullable listener: RecipeClickListener?) {
+        setOnClickListener {
+            listener?.onRecipeClicked(recipeId)
+        }
+    }
 }

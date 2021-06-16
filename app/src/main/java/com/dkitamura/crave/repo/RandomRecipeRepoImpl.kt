@@ -3,6 +3,8 @@ package com.dkitamura.crave.repo
 import com.dkitamura.crave.models.network.randomrecipes.Recipe
 import com.dkitamura.crave.network.RecipeApi
 import com.dkitamura.crave.network.Result
+import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import javax.inject.Inject
 
 class RandomRecipeRepoImpl @Inject constructor(
@@ -20,6 +22,17 @@ class RandomRecipeRepoImpl @Inject constructor(
             }
         } catch (throwable: Throwable) {
             Result.Error(throwable as Exception)
+        }
+    }
+
+    override suspend fun getRecipesFlow(amount: Int): Flow<Result<List<Recipe>>> {
+
+        return flow {
+            emit(Result.InProgress)
+
+            val result = recipeApi.getRandomRecipes(8)
+
+            emit(Result.Success(result.body()?.recipes ?: emptyList()))
         }
     }
 }
