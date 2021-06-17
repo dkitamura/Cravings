@@ -15,6 +15,7 @@ import com.dkitamura.crave.extensions.autoCleared
 import com.dkitamura.crave.network.Result
 import com.dkitamura.crave.ui.details.DetailsFragmentArgs
 import com.dkitamura.crave.ui.home.epoxy.RecipeClickListener
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -38,8 +39,9 @@ class HomeFragment : Fragment(), RecipeClickListener {
         return binding.root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         homeEpoxyController = HomeEpoxyController(this)
 
         binding.homeEpoxyRecyclerview.run {
@@ -56,7 +58,14 @@ class HomeFragment : Fragment(), RecipeClickListener {
                 is Result.InProgress -> {
                     homeEpoxyController.setValues(isLoading = true)
                 }
-                is Result.Error -> TODO()
+                is Result.Error -> {
+                    val snackbar = Snackbar.make(binding.root, "There has been an error, please try again.", Snackbar.LENGTH_INDEFINITE)
+                        .setAction("Retry", {
+                            viewModel.getRandomRecipes()
+                        })
+                    snackbar.show()
+                    homeEpoxyController.setValues(isLoading = false, recipeList = emptyList())
+                }
             }
         }
 

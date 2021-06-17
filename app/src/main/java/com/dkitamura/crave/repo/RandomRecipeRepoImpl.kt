@@ -30,9 +30,12 @@ class RandomRecipeRepoImpl @Inject constructor(
         return flow {
             emit(Result.InProgress)
 
-            val result = recipeApi.getRandomRecipes(8)
-
-            emit(Result.Success(result.body()?.recipes ?: emptyList()))
+            try {
+                val result = recipeApi.getRandomRecipes(8)
+                emit(Result.Success(result.body()?.recipes ?: emptyList()))
+            } catch (exception: Exception) {
+                emit(Result.Error(exception))
+            }
         }
     }
 }

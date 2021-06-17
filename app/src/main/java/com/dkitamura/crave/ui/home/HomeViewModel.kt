@@ -8,6 +8,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.dkitamura.crave.repo.RandomRecipeRepo
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.collect
@@ -25,7 +26,7 @@ class HomeViewModel @Inject constructor(
 
     fun getRandomRecipes() {
 
-        viewModelScope.launch {
+        viewModelScope.launch(Dispatchers.IO) {
 
          randomRecipeRepo.getRecipesFlow(8)
                 .collect {
@@ -38,7 +39,7 @@ class HomeViewModel @Inject constructor(
                     }
 
                     is Result.Error -> {
-                        _recipeFlow.value = Result.Success(emptyList())
+                        _recipeFlow.value = it
                     }
                 }
             }
