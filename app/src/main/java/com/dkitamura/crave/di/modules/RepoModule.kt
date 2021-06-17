@@ -3,6 +3,8 @@ package com.dkitamura.crave.di.modules
 import com.dkitamura.crave.network.RecipeApi
 import com.dkitamura.crave.repo.RandomRecipeRepo
 import com.dkitamura.crave.repo.RandomRecipeRepoImpl
+import com.dkitamura.crave.repo.RecipeInformationRepo
+import com.dkitamura.crave.repo.RecipeInformationRepoImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -12,11 +14,16 @@ import javax.inject.Singleton
 
 @Module
 @InstallIn(ActivityRetainedComponent::class)
-class RandomRecipeRepoModule {
+class RepoModule {
 
     @Provides
     fun provideRandomRecipeRepo(api: RecipeApi): RandomRecipeRepo {
         return RandomRecipeRepoImpl(api)
+    }
+
+    @Provides
+    fun provideRecipeInformationRepo(api: RecipeApi): RecipeInformationRepo {
+        return RecipeInformationRepoImpl(api)
     }
 
 }
