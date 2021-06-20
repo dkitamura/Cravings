@@ -1,5 +1,6 @@
 package com.dkitamura.crave.di.modules
 
+import com.dkitamura.crave.database.CravingsDatabase
 import com.dkitamura.crave.network.RecipeApi
 import com.dkitamura.crave.repo.RandomRecipeRepo
 import com.dkitamura.crave.repo.RandomRecipeRepoImpl
@@ -17,8 +18,8 @@ import javax.inject.Singleton
 class RepoModule {
 
     @Provides
-    fun provideRandomRecipeRepo(api: RecipeApi): RandomRecipeRepo {
-        return RandomRecipeRepoImpl(api)
+    fun provideRandomRecipeRepo(api: RecipeApi, database: CravingsDatabase): RandomRecipeRepo {
+        return RandomRecipeRepoImpl(api, database)
     }
 
     @Provides

@@ -1,81 +1,119 @@
 package com.dkitamura.crave.models.network.randomrecipes
 
 
+import androidx.room.*
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import org.threeten.bp.OffsetDateTime
 
 @JsonClass(generateAdapter = true)
+@Entity(tableName = "recipe")
 data class Recipe(
     @Json(name = "aggregateLikes")
-    val aggregateLikes: Int?,
-    @Json(name = "analyzedInstructions")
-    val analyzedInstructions: List<AnalyzedInstruction>?,
+    @ColumnInfo(name = "aggregate_likes")
+    var aggregateLikes: Int = 0,
+
     @Json(name = "cheap")
-    val cheap: Boolean?,
+    @ColumnInfo(name = "cheap")
+    var cheap: Boolean = false,
+
     @Json(name = "creditsText")
-    val creditsText: String?,
+    @ColumnInfo(name = "credits_text")
+    var creditsText: String = "",
+
     @Json(name = "cuisines")
-    val cuisines: List<String>?,
+    @ColumnInfo(name = "cuisines")
+    var cuisines: List<String> = emptyList(),
+
     @Json(name = "dairyFree")
-    val dairyFree: Boolean?,
-    @Json(name = "diets")
-    val diets: List<String>?,
-    @Json(name = "dishTypes")
-    val dishTypes: List<String>?,
-    @Json(name = "extendedIngredients")
-    val extendedIngredients: List<ExtendedIngredient>?,
-    @Json(name = "gaps")
-    val gaps: String?,
+    @ColumnInfo(name = "dairy_free")
+    var dairyFree: Boolean = false,
+
     @Json(name = "glutenFree")
-    val glutenFree: Boolean?,
+    @ColumnInfo(name = "gluten_free")
+    var glutenFree: Boolean = false,
+
     @Json(name = "healthScore")
-    val healthScore: Double?,
+    @ColumnInfo(name = "health_score")
+    var healthScore: Double = 0.0,
+
     @Json(name = "id")
-    val id: Int?,
+    @ColumnInfo(name = "id")
+    @PrimaryKey(autoGenerate = false)
+    var id: Int = -1,
+
     @Json(name = "image")
-    val image: String?,
+    @ColumnInfo(name = "image_url")
+    var image: String = "",
+
     @Json(name = "imageType")
-    val imageType: String?,
+    @ColumnInfo(name = "image_type")
+    var imageType: String = "",
+
     @Json(name = "instructions")
-    val instructions: String?,
+    @ColumnInfo(name = "instructions")
+    var instructions: String = "",
+
     @Json(name = "license")
-    val license: String?,
+    @ColumnInfo(name = "license")
+    var license: String = "",
+
     @Json(name = "lowFodmap")
-    val lowFodmap: Boolean?,
-    @Json(name = "occasions")
-    val occasions: List<Any>?,
-    @Json(name = "originalId")
-    val originalId: Any?,
+    @ColumnInfo(name = "low_fod_map")
+    var lowFodmap: Boolean = false,
+
     @Json(name = "pricePerServing")
-    val pricePerServing: Double?,
+    @ColumnInfo(name = "price_per_serving")
+    var pricePerServing: Double = 0.0,
+
     @Json(name = "readyInMinutes")
-    val readyInMinutes: Int?,
+    @ColumnInfo(name = "ready_in_minutes")
+    var readyInMinutes: Int = -1,
+
     @Json(name = "servings")
-    val servings: Int?,
+    @ColumnInfo(name = "servings")
+    var servings: Int = -1,
+
     @Json(name = "sourceName")
-    val sourceName: String?,
+    @ColumnInfo(name = "source_name")
+    var sourceName: String = "",
+
     @Json(name = "sourceUrl")
-    val sourceUrl: String?,
+    @ColumnInfo(name = "source_url")
+    var sourceUrl: String = "",
+
     @Json(name = "spoonacularScore")
-    val spoonacularScore: Double?,
+    @ColumnInfo(name = "spoonacular_score")
+    var spoonacularScore: Double = 0.0,
+
     @Json(name = "spoonacularSourceUrl")
-    val spoonacularSourceUrl: String?,
+    @ColumnInfo(name = "spoonacularUrl")
+    var spoonacularSourceUrl: String = "",
+
     @Json(name = "summary")
-    val summary: String?,
+    @ColumnInfo(name = "summary")
+    var summary: String = "",
+
     @Json(name = "sustainable")
-    val sustainable: Boolean?,
+    @ColumnInfo(name = "sustainable")
+    var sustainable: Boolean = false,
+
     @Json(name = "title")
-    val title: String?,
+    @ColumnInfo(name = "title")
+    var title: String = "",
+
     @Json(name = "vegan")
-    val vegan: Boolean?,
+    @ColumnInfo(name = "vegan")
+    var vegan: Boolean = false,
+
     @Json(name = "vegetarian")
-    val vegetarian: Boolean?,
+    @ColumnInfo(name = "vegetarian")
+    var vegetarian: Boolean = false,
+
     @Json(name = "veryHealthy")
-    val veryHealthy: Boolean?,
-    @Json(name = "veryPopular")
-    val veryPopular: Boolean?,
-    @Json(name = "weightWatcherSmartPoints")
-    val weightWatcherSmartPoints: Int?,
-    @Json(name = "winePairing")
-    val winePairing: WinePairing?
+    @ColumnInfo(name = "very_healthy")
+    var veryHealthy: Boolean = false,
+
+    @ColumnInfo(name = "created_at")
+    var createdAt: OffsetDateTime = OffsetDateTime.now()
 )

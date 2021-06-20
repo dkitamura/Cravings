@@ -1,5 +1,6 @@
 package com.dkitamura.crave.ui.home
 
+import android.util.Log
 import android.view.View
 import androidx.core.text.parseAsHtml
 import com.airbnb.epoxy.EpoxyController
@@ -37,10 +38,12 @@ class HomeEpoxyController(
 
                     title(recipe.title ?: "")
 
-                    if(recipe.cuisines?.isNotEmpty() == true) {
+                    //We need to grab the first element and see if it is blank.
+                    //This is the consequence of parsing List<String> for Cuisines into Room
+                    if(recipe.cuisines.isNotEmpty() && recipe.cuisines.first().isNotEmpty()) {
                         description("Cuisines: ${recipe.cuisines.joinToString()}")
                     } else {
-                        description("Cuisines: Not available")
+                        description("Cuisines: N/A")
                     }
 
                     image(recipe.image ?: "")
