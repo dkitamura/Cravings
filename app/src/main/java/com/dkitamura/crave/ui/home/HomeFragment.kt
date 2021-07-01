@@ -48,29 +48,32 @@ class HomeFragment : Fragment(), RecipeClickListener {
             setControllerAndBuildModels(homeEpoxyController)
         }
 
+        viewModel.loaderStatusFlow.asLiveData().observe(viewLifecycleOwner) { loaderVisibility ->
+            homeEpoxyController.setLoadingStatus(loaderVisibility)
+        }
+
+        viewModel.errorFlow.asLiveData().observe(viewLifecycleOwner) { showError ->
+            if(showError) {
+                createNetworkErrorSnackbar()
+            }
+        }
+
         viewModel.recipeFlow.asLiveData().observe(viewLifecycleOwner) {
             recipeResult ->
-
-            when(recipeResult) {
-                is Result.Success -> {
-                    homeEpoxyController.setValues(isLoading = false, recipeList = recipeResult.data)
-                }
-                is Result.InProgress -> {
-                    homeEpoxyController.setValues(isLoading = true)
-                }
-                is Result.Error -> {
-                    val snackbar = Snackbar.make(binding.root, "There has been an error, please try again.", Snackbar.LENGTH_INDEFINITE)
-                        .setAction("Retry", {
-                            viewModel.getRandomRecipes()
-                        })
-                    snackbar.show()
-                    homeEpoxyController.setValues(isLoading = false, recipeList = emptyList())
-                }
-            }
+            homeEpoxyController.setRecipeList(recipeResult)
         }
 
 
         viewModel.getRandomRecipes()
+    }
+
+    private fun createNetworkErrorSnackbar() {
+        val snackbar = Snackbar.make(binding.root, "There has been an error, please try again.", Snackbar.LENGTH_INDEFINITE)
+            .setAction("Retry") {
+                viewModel.getRandomRecipes()
+                viewModel.hideError()
+            }
+        snackbar.show()
     }
 
     override fun onRecipeClicked(id: Int) {

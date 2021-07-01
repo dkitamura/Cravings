@@ -54,13 +54,17 @@ class HomeEpoxyController(
         }
     }
 
-    fun setValues(
-        isLoading: Boolean = false,
+    fun setRecipeList(
         recipeList: List<Recipe> = emptyList()
     ) {
-        loading = isLoading
         recipes = recipeList
+        requestModelBuild()
+    }
 
+    fun setLoadingStatus(
+        status: Boolean = false
+    ) {
+        loading = status
         requestModelBuild()
     }
 

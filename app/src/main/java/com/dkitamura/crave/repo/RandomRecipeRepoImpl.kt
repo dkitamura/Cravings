@@ -1,5 +1,6 @@
 package com.dkitamura.crave.repo
 
+import android.util.Log
 import com.dkitamura.crave.database.CravingsDatabase
 import com.dkitamura.crave.database.daos.RandomRecipeDao
 import com.dkitamura.crave.models.network.randomrecipes.Recipe
@@ -19,7 +20,7 @@ class RandomRecipeRepoImpl @Inject constructor(
 
     override suspend fun getRecipes(amount: Int): Result<List<Recipe>> {
         val result = recipeApi.getRandomRecipes(amount)
-
+        Log.e("Jnetwork", result.toString());
         return try {
             if(result.isSuccessful) {
 
@@ -39,17 +40,17 @@ class RandomRecipeRepoImpl @Inject constructor(
             emit(Result.InProgress)
             db.randomRecipeDao().getAllRecipes().collect { recipe ->
                 val result = recipe.filter { it.createdAt.plusMinutes(5).isAfter(OffsetDateTime.now()) }
-                if(result.size > 0) {
+                if(result.isNotEmpty()) {
                     emit(Result.Success(recipe))
                 } else {
                     db.randomRecipeDao().deleteAllEntries()
 
-
-                    val networkResult = getRecipes(8)
-                    when(networkResult) {
+                    when(val recipeApiResult = getRecipes(amount)) {
                         is Result.Success -> {}
                         Result.InProgress -> {}
-                        is Result.Error -> {}
+                        is Result.Error -> {
+                            emit(recipeApiResult)
+                        }
                     }
                 }
             }
