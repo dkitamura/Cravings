@@ -1,17 +1,15 @@
 package com.dkitamura.crave.ui.home
 
+import com.dkitamura.crave.models.network.randomrecipes.Recipe
 import com.dkitamura.crave.network.Result
 import com.dkitamura.crave.repo.RandomRecipeRepo
 import io.mockk.MockKAnnotations
 import io.mockk.coEvery
 import io.mockk.impl.annotations.RelaxedMockK
-import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.flow
 
 import kotlinx.coroutines.test.TestCoroutineDispatcher
-import kotlinx.coroutines.test.resetMain
 import kotlinx.coroutines.test.runBlockingTest
-import kotlinx.coroutines.test.setMain
 import org.junit.*
 
 import org.junit.Assert.*
@@ -25,6 +23,19 @@ class HomeViewModelTest {
     lateinit var randomRecipeRepo: RandomRecipeRepo
 
     private val testDispatcher = TestCoroutineDispatcher()
+
+    private val expectedData = Result.Success(
+        listOf(
+            Recipe(
+                id = 1,
+                title = "First Recipe"
+            ),
+            Recipe(
+                id = 2,
+                title = "Second Recipe"
+            )
+        )
+    )
 
 
     @Before
@@ -54,7 +65,10 @@ class HomeViewModelTest {
                 emit(Result.Error(Exception("Test Exception")))
             }
         }
+        assertFalse(homeViewModel.errorFlow.value)
+
         homeViewModel.getRandomRecipes()
+
         assertTrue(homeViewModel.errorFlow.value)
     }
 
@@ -69,6 +83,7 @@ class HomeViewModelTest {
             }
         }
         homeViewModel.getRandomRecipes()
+
         assertTrue(homeViewModel.recipeFlow.value.isEmpty())
     }
 
@@ -83,23 +98,64 @@ class HomeViewModelTest {
             }
         }
         homeViewModel.getRandomRecipes()
+
         assertFalse(homeViewModel.loaderStatusFlow.value)
     }
 
 
     @Test
-    fun getLoaderStatusFlow() {
+    fun `When randomRecipeRepo returns data then it is sent through the recipeFlow`() = runBlockingTest {
+        coEvery {
+            randomRecipeRepo.getRecipesFlow(any())
+        } coAnswers {
+            flow {
+                emit(
+                    expectedData
+                )
+            }
+        }
+
+        assertTrue(homeViewModel.recipeFlow.value.isEmpty())
+
+        homeViewModel.getRandomRecipes()
+
+        assertEquals(homeViewModel.recipeFlow.value, expectedData.data)
     }
 
     @Test
-    fun getErrorFlow() {
+    fun `When getRecipesFlow is called then the showLoaderFlow is true`() = runBlockingTest {
+        coEvery {
+            randomRecipeRepo.getRecipesFlow(any())
+        } coAnswers {
+            flow {
+                emit(Result.InProgress)
+            }
+        }
+
+        assertFalse(homeViewModel.loaderStatusFlow.value)
+
+        homeViewModel.getRandomRecipes()
+
+        assertTrue(homeViewModel.loaderStatusFlow.value)
     }
 
     @Test
-    fun getRandomRecipes() {
-    }
+    fun `When hideError is called then the errorFlow is false`() = runBlockingTest {
+        coEvery {
+            randomRecipeRepo.getRecipesFlow(any())
+        } coAnswers {
+            flow {
+                emit(Result.Error(Exception("Test Exception")))
+            }
+        }
+        assertFalse(homeViewModel.errorFlow.value)
 
-    @Test
-    fun hideError() {
+        homeViewModel.getRandomRecipes()
+
+        assertTrue(homeViewModel.errorFlow.value)
+
+        homeViewModel.hideError()
+
+        assertFalse(homeViewModel.errorFlow.value)
     }
 }
